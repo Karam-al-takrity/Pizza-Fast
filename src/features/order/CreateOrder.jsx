@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Form, redirect, useActionData, useNavigation } from 'react-router-dom';
 import { createOrder } from '../../services/apiRestaurant';
-
+import Button from '../../ui/Button';
 // https://uibakery.io/regex-library/phone-number
 const isValidPhone = (str) =>
   /^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/.test(
@@ -51,6 +51,7 @@ function CreateOrder() {
         <div>
           <label>First Name</label>
           <input
+            className="input"
             type="text"
             name="customer"
             onChange={() => formSubmission()}
@@ -61,7 +62,7 @@ function CreateOrder() {
         <div>
           <label>Phone number</label>
           <div>
-            <input type="tel" name="phone" required />
+            <input className="input" type="tel" name="phone" required />
           </div>
           {formErrors?.phone && <p>{formErrors.phone}</p>}
         </div>
@@ -69,7 +70,7 @@ function CreateOrder() {
         <div>
           <label>Address</label>
           <div>
-            <input type="text" name="address" required />
+            <input type="input" name="address" required className="input" />
           </div>
         </div>
 
@@ -78,6 +79,7 @@ function CreateOrder() {
             type="checkbox"
             name="priority"
             id="priority"
+            className="focus:ring-offset-40 h-6 w-6 accent-yellow-400 focus:outline-none focus:ring focus:ring-yellow-400 focus:ring-offset-2"
             // value={withPriority}
             // onChange={(e) => setWithPriority(e.target.checked)}
           />
@@ -86,9 +88,9 @@ function CreateOrder() {
 
         <div>
           <input type="hidden" name="cart" value={JSON.stringify(cart)} />
-          <button disabled={isSubmitting}>
+          <Button disabled={isSubmitting} type="primary">
             {isSubmitting ? 'Packing Order... ' : 'Order now'}
-          </button>
+          </Button>
         </div>
       </Form>
     </div>
@@ -105,14 +107,14 @@ export async function action({ request }) {
     priority: data.priority === 'on',
   };
 
-  const newOrder = await createOrder(order);
-
   const errors = {};
   if (!isValidPhone(order.phone)) errors.phone = 'Invalid phone number';
 
   if (Object.keys(errors).length > 0) return errors;
 
-  return redirect(`/order/${newOrder.id}`);
+  // const newOrder = await createOrder(order);
+  // return redirect(`/order/${newOrder.id}`);
+  return null;
 }
 
 export default CreateOrder;
