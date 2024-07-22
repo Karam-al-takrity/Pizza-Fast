@@ -1,12 +1,13 @@
 // Test ID: IIDSAT
 
-import { useLoaderData } from "react-router-dom";
-import { getOrder } from "../../services/apiRestaurant";
+import { useLoaderData } from 'react-router-dom';
+import { getOrder } from '../../services/apiRestaurant';
+import OrderItem from './OrderItem';
 import {
   calcMinutesLeft,
   formatCurrency,
   formatDate,
-} from "../../utils/helpers";
+} from '../../utils/helpers';
 
 function Order() {
   const order = useLoaderData();
@@ -24,29 +25,51 @@ function Order() {
   const deliveryIn = calcMinutesLeft(estimatedDelivery);
 
   return (
-    <div>
-      <div>
-        <h2>Status</h2>
+    <div className="space-y-8 px-4 py-6">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h2 className="font-semibold text-xl">Order #{id} Status</h2>
 
-        <div>
-          {priority && <span>Priority</span>}
-          <span>{status} order</span>
+        <div className="space-x-2">
+          {priority && (
+            <span className="font-semibold rounded-full bg-red-500 px-3 py-1 text-sm uppercase tracking-wide text-red-50">
+              Priority
+            </span>
+          )}
+          <span className="font-semibold rounded-full bg-green-500 px-3 py-1 text-sm uppercase tracking-wide text-red-50">
+            {status} order
+          </span>
         </div>
       </div>
 
-      <div>
-        <p>
+      <div className="flex flex-wrap items-center justify-between gap-2 bg-stone-200 px-6 py-5">
+        <p className="font-medium">
           {deliveryIn >= 0
             ? `Only ${calcMinutesLeft(estimatedDelivery)} minutes left 😃`
-            : "Order should have arrived"}
+            : 'Order should have arrived'}
         </p>
-        <p>(Estimated delivery: {formatDate(estimatedDelivery)})</p>
+        <p className="text-xs text-stone-500">
+          (Estimated delivery: {formatDate(estimatedDelivery)})
+        </p>
       </div>
 
-      <div>
-        <p>Price pizza: {formatCurrency(orderPrice)}</p>
-        {priority && <p>Price priority: {formatCurrency(priorityPrice)}</p>}
-        <p>To pay on delivery: {formatCurrency(orderPrice + priorityPrice)}</p>
+      <ul className="dive-stone-200 divide-y border-b border-t">
+        {cart.map((item) => (
+          <OrderItem item={item} key={item.id} />
+        ))}
+      </ul>
+
+      <div className="space-y-2 bg-stone-200 px-6 py-5">
+        <p className="font-medium text-sm text-stone-600">
+          Price pizza: {formatCurrency(orderPrice)}
+        </p>
+        {priority && (
+          <p className="font-medium text-sm text-stone-600">
+            Price priority: {formatCurrency(priorityPrice)}
+          </p>
+        )}
+        <p className="font-bolder">
+          To pay on delivery: {formatCurrency(orderPrice + priorityPrice)}
+        </p>
       </div>
     </div>
   );
